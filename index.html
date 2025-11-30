@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Anomaly Detection - ML Project</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>💰Anomaly Detection in Financial Transactions</h1>
+    <h3>Detect Anomalous Financial Transactions</h3>
+
+    <!-- Manual input form -->
+    <div class="card">
+      <h2>Manual Transaction Check</h2>
+      <form method="post">
+        <input type="hidden" name="action" value="manual">
+
+        <label>Transaction Amount</label>
+        <input name="amount" placeholder="e.g. 2000" required>
+
+        <label>Average Transaction Amount</label>
+        <input name="avg_amount" placeholder="e.g. 1800" required>
+
+        <label>Frequency of Transactions</label>
+        <input name="frequency" placeholder="e.g. 12" required>
+
+        <button type="submit" class="primary-btn">Check Transaction</button>
+      </form>
+
+      {% if manual_result %}
+      <div class="result">
+        <strong>Result:</strong>
+        {% if "Anomaly Detected" in manual_result %}
+          <span class="anomaly">⚠️ {{ manual_result }}</span>
+        {% else %}
+          <span class="normal">✅ {{ manual_result }}</span>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- CSV upload -->
+    <div class="card">
+      <h2>Upload CSV for Batch Detection</h2>
+      <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="upload">
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit" class="primary-btn">Upload & Detect</button>
+      </form>
+
+      {% if counts %}
+        <div class="summary">
+          <p>✅ Normal: {{ counts.get('Anomaly Not Detected', 0) }}</p>
+          <p>⚠️ Anomalies: {{ counts.get('Anomaly Detected', 0) }}</p>
+        </div>
+      {% endif %}
+
+      {% if table_html %}
+        <div class="table-wrap">
+          {{ table_html | safe }}
+        </div>
+      {% endif %}
+    </div>
+
+    
+  </div>
+</body>
+</html>
+
